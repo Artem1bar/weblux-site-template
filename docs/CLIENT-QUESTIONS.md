@@ -13,7 +13,7 @@ question to ask. Never renumber — the numbers are load-bearing once cited.
 Q1–Q15 keep these numbers across all Weblux projects, so "Q10" means DNS access in
 every repo. Delete none; mark a resolved one with the answer and the date. Access
 items — who invites us into which system — are the access checklist's job
-(~/weblux/docs/onboarding/templates/access-checklist.md); don't restate it here.
+(a separate onboarding document); don't restate it here.
 These are the FACTS only the client knows.
 -->
 

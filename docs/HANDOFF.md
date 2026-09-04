@@ -3,8 +3,8 @@
 <!--
 Five builds, zero handoffs — this file exists so the next one is different. The test:
 a client who cannot leave has not been handed over. Fill every slot; "n/a" is an
-answer, blank is not. Full narrative: stage 9 in
-~/weblux/docs/onboarding/06-delivery-handover-review.md.
+answer, blank is not. Full narrative: stage 9 (delivery, handover, review) of your onboarding
+process.
 -->
 
 **Client:** {{...}} · **Went live:** {{date}} · **Handover completed:** {{date}}

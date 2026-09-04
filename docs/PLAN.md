@@ -1,7 +1,7 @@
 # Rebuild plan — {{CLIENT}}
 
 {{One line: what is being replaced, with what, for whom.}} Template:
-`~/weblux-site-template`.
+[weblux-site-template](https://github.com/Artem1bar/weblux-site-template).
 
 ## Goal
 

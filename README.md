@@ -1,7 +1,34 @@
 # Weblux Site Template
 
-The starting point for a Weblux client site: a Next.js brochure-site skeleton plus the
-docs lifecycle every build runs, from reference capture to handover.
+The starting point for a Weblux client site: a Next.js 16 brochure-site skeleton that
+renders honestly before a single client fact is known — typed `pending()` content, a lead
+pipeline, an SEO kit, contrast-enforced design tokens — plus the docs lifecycle every
+build runs, from reference capture to handover.
+
+![Template home page with every client fact still pending](docs/screenshot.png)
+
+## Quickstart
+
+```bash
+git clone https://github.com/Artem1bar/weblux-site-template.git
+cd weblux-site-template
+npm install
+npm run dev          # http://localhost:3000
+```
+
+Requires Node 22. The site runs with zero env vars; copy `.env.example` to `.env.local`
+when the lead form should deliver somewhere — each variable documents what breaks while
+it is unset. Checks:
+
+```bash
+npm run lint
+npm run typecheck    # next typegen && tsc --noEmit
+npm test             # Vitest — 151 tests
+npm run build
+npm run e2e          # Playwright against a production build; `npx playwright install chromium` once first
+```
+
+## Where it came from
 
 Distilled 2026-08-14 from five shipped client builds (named generically here):
 
@@ -48,7 +75,7 @@ docs/CLIENT-QUESTIONS.md     everything unverifiable, numbered so code can cite 
 docs/PLAN.md                 goal, locked decisions, IA, phases, the port delta
         ▼
 (proposal)                   only if the client isn't already greenlit — onboarding
-        │                    stage 4: ~/weblux/docs/onboarding/04-proposal-and-agreement.md
+        │                    stage 4 (proposal and agreement) of your onboarding process
         ▼
 build                        overnight runs land their reports in docs/nightly/
         │                    (one dated report per run)
@@ -94,6 +121,12 @@ This template is the brochure-site skeleton. When the engagement is a product �
 tenancy, a database, integrations — the docs lifecycle still applies, and this skeleton
 becomes the `(marketing)` route group inside the platform repo. The boundary, and the
 reference implementations (two private platform builds): [docs/PLATFORM.md](docs/PLATFORM.md).
+
+## Status
+
+In active use for new client builds. A fresh clone was verified on 2026-09-04: install,
+lint, typecheck, 151 tests, and production build all pass with no env vars set. There is
+no public demo — the template deliberately contains no business facts to show.
 
 ## Built with
 

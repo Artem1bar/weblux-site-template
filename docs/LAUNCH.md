@@ -2,7 +2,7 @@
 
 Go-live and DNS cutover. Every line gets an OWNER and a DATE **before** cutover is
 scheduled — this file exists because the cutover step has died of unowned-ness twice.
-Full narrative: stage 8 in `~/weblux/docs/onboarding/06-delivery-handover-review.md`.
+Full narrative: stage 8 (delivery and handover) of your onboarding process.
 
 **Client:** {{...}} · **Domain:** {{...}} · **DNS host:** {{...}}
 **Cutover:** {{a Tuesday or Wednesday morning — never Friday, never before a holiday,
