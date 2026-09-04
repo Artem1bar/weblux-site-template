@@ -1,0 +1,590 @@
+@import "tailwindcss";
+
+/*
+  Colour values here mirror src/styles/tokens.ts, which is the source of truth
+  and is contrast-tested in src/lib/contrast.test.ts. Change one, change both —
+  and note the dark values appear twice below (media block + attribute block),
+  so a palette swap touches three places in this file.
+*/
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --bg: #ffffff;
+  --surface: #f4f6f8;
+  --ink: #1f2933;
+  --ink-muted: #4e5d6c;
+  --brand: #2563eb;
+  --on-brand: #ffffff;
+  --accent: #1d4ed8;
+  --on-accent: #ffffff;
+  --border: #d9e0e6;
+  --focus: #1d4ed8;
+  --danger: #b3261e;
+
+  /*
+    Ink-on-photograph. Photography under the scrims reads dark in both themes,
+    so the scrim and the type over it do not flip with the colour scheme — they
+    are fixed against the image, not against the page.
+  */
+  --on-photo: #ffffff;
+  --on-photo-muted: #c6d0da;
+  --photo-scrim: rgba(10, 12, 14, 0.62);
+
+  --radius: 0.5rem;
+  --header-h: 4.5rem;
+
+  /*
+    Motion doctrine, in numbers.
+
+    One easing curve does almost all the work: a strong ease-out, so everything
+    arrives quickly and settles. Nothing on this site eases *in* — an element
+    that accelerates away from the reader reads as sluggish. Durations are a
+    short scale, and anything bigger moving further gets the longer one.
+  */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --dur-fast: 140ms;
+  --dur: 240ms;
+  --dur-slow: 480ms;
+  --dur-slower: 900ms;
+}
+
+/*
+  Theme policy: follow the operating system by default, and persist an explicit
+  choice made with the header switch.
+
+  Three states, two selectors. With no stored choice, `data-theme` is absent and
+  the @media block below decides. An explicit choice sets `data-theme` to
+  "light" or "dark": the `[data-theme="dark"]` block wins for dark, and the
+  `:not([data-theme="light"])` guard makes an explicit "light" beat a dark OS.
+
+  Forcing one reviewed theme on everyone regardless of OS is a legitimate
+  per-brand decision (a first impression is reviewed in one theme) — if a client
+  wants that, delete the @media block, make the bare `:root` carry the forced
+  theme, and change the fallback in theme-toggle.tsx to match. Do not ship the
+  forced look as a template default; that is a choice a brand makes, not a
+  scaffold.
+*/
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10161c;
+    --surface: #1a232c;
+    --ink: #eef2f6;
+    --ink-muted: #a3b1bf;
+    --accent: #8ab8f0;
+    --on-accent: #0c1a33;
+    --border: #2c3945;
+    --focus: #8ab8f0;
+    --danger: #ffa198;
+    --photo-scrim: rgba(6, 8, 10, 0.68);
+  }
+}
+
+[data-theme="dark"] {
+  --bg: #10161c;
+  --surface: #1a232c;
+  --ink: #eef2f6;
+  --ink-muted: #a3b1bf;
+  --accent: #8ab8f0;
+  --on-accent: #0c1a33;
+  --border: #2c3945;
+  --focus: #8ab8f0;
+  --danger: #ffa198;
+  --photo-scrim: rgba(6, 8, 10, 0.68);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-brand: var(--brand);
+  --color-on-brand: var(--on-brand);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-border: var(--border);
+  --color-focus: var(--focus);
+  --color-danger: var(--danger);
+  --color-on-photo: var(--on-photo);
+  --color-on-photo-muted: var(--on-photo-muted);
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: var(--radius);
+
+  --ease-brand: var(--ease);
+  --ease-brand-soft: var(--ease-soft);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Anchor targets clear the sticky header instead of hiding under it. */
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /*
+    One visible focus style everywhere. The class of old site this template
+    replaces usually has none, which makes keyboard navigation guesswork.
+  */
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Over a photograph the light-theme ring disappears into the scrim; the pale
+     accent is the one ring that survives both a dark image and a light page. */
+  .on-photo :focus-visible {
+    outline-color: var(--on-photo);
+  }
+
+  ::selection {
+    background-color: var(--brand);
+    color: var(--on-brand);
+  }
+
+  /* Headings inherit weight from the type scale utilities, not from the tag. */
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /*
+    The display face. The template ships one neutral face in both slots (see
+    layout.tsx), so this class only tightens tracking; when a brand face with
+    variable axes arrives, its personality settings belong here.
+  */
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.018em;
+  }
+}
+
+@layer utilities {
+  /*
+    ── Theme switch ───────────────────────────────────────────────────────────
+
+    The toggle renders a moon-plus-label and a sun-plus-label and lets this
+    cascade pick one, so the button never has to run script to be correct.
+    `display: none` also drops the losing half from the accessibility tree, so
+    the accessible name always matches what a press will actually do.
+
+    Mirrors the theme rules at the top of this file exactly: OS preference
+    unless an explicit `data-theme` overrides it. If the theme policy changes,
+    change this block with it or the icon and the page will disagree.
+  */
+  .theme-when-dark { display: none; }
+  .theme-when-light { display: contents; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-when-light { display: none; }
+    :root:not([data-theme="light"]) .theme-when-dark { display: contents; }
+  }
+
+  [data-theme="dark"] .theme-when-light { display: none; }
+  [data-theme="dark"] .theme-when-dark { display: contents; }
+
+  /*
+    ── Reveal on scroll ───────────────────────────────────────────────────────
+
+    Scroll-driven CSS animation and no JavaScript at all. Where
+    `animation-timeline` is unsupported the @supports block never applies, the
+    animation never runs, and the content simply renders — visible, in place,
+    exactly as the server sent it. There is no state in which script failing
+    leaves a reader staring at a blank section. (The classic small-site
+    alternative — WOW.js setting `visibility: hidden` on everything — is the
+    exact failure this exists to rule out.)
+
+    `.reveal` moves and does not fade, and that is a correctness decision rather
+    than a taste one. An opacity fade blends the text toward the page behind it,
+    so for the whole first half of the animation the contrast ratio is whatever
+    the blend happens to be — a token that is comfortably AA at rest still fails
+    mid-fade, and axe has caught exactly that on a shipped page. There is no
+    fade that is both visible and safe, so text never fades. Translation alone
+    reads as a reveal and never touches a contrast ratio.
+  */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal {
+        animation: reveal-rise linear both;
+        animation-timeline: view();
+        /* Starts as the element enters the viewport, finishes a quarter up it. */
+        animation-range: entry 0% cover 26%;
+      }
+
+      .reveal-fade {
+        animation: reveal-fade linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 22%;
+      }
+
+      /* For image frames: the picture uncovers rather than slides. */
+      .reveal-wipe {
+        animation: reveal-wipe linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 30%;
+      }
+
+      /* A slow parallax drift for photographs inside a fixed frame. */
+      .drift {
+        animation: drift linear both;
+        animation-timeline: view();
+        animation-range: cover 0% cover 100%;
+      }
+    }
+  }
+
+  /* Movement only — see the note above on why nothing here fades. */
+  @keyframes reveal-rise {
+    from { transform: translateY(1.75rem); }
+    to   { transform: translateY(0); }
+  }
+
+  /*
+    reveal-fade and reveal-wipe do change opacity, so they are only ever put on
+    photographs and decoration — never on a block of text. A picture at 40%
+    opacity is a picture arriving; a sentence at 40% opacity is a sentence
+    somebody cannot read.
+  */
+  @keyframes reveal-fade {
+    from { opacity: 0.35; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes reveal-wipe {
+    from { clip-path: inset(0 0 22% 0); }
+    to   { clip-path: inset(0 0 0 0); }
+  }
+
+  @keyframes drift {
+    from { transform: scale(1.12) translateY(-1.6%); }
+    to   { transform: scale(1.12) translateY(1.6%); }
+  }
+
+  /*
+    A rule that draws itself along the scroll rather than arriving finished.
+    scaleY from the top, so nothing reflows: the element already occupies its
+    full height and only its painted length changes. Where `animation-timeline`
+    is unsupported the rule simply renders at full length, which is the correct
+    resting state anyway.
+  */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .spine-draw {
+        transform-origin: top;
+        animation: spine-draw linear both;
+        animation-timeline: view();
+        animation-range: entry 12% cover 62%;
+      }
+    }
+  }
+
+  @keyframes spine-draw {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+  }
+
+  /*
+    The brand hairline above a section heading, drawn rather than placed.
+    It is a 3px decorative bar, never text, so animating its width cannot put a
+    contrast ratio in motion. `.rule-brand` keeps working untouched wherever
+    this is not applied.
+  */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .rule-brand::before {
+        transform-origin: left;
+        animation: rule-draw linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 22%;
+      }
+    }
+  }
+
+  @keyframes rule-draw {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  /*
+    A display heading uncovering from beneath its own baseline.
+
+    Deliberately clip-path and not opacity — see the `.reveal` note. A clip
+    reveals fully-opaque ink from the first frame: the letters are either
+    painted at their real colour or not painted at all.
+  */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .text-rise {
+        animation: text-rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 24%;
+      }
+    }
+  }
+
+  /*
+    Clip only, no translate. `.reveal` on the parent is already moving this
+    element 1.75rem; a second translate on the heading itself compounds into a
+    lurch rather than reading as one considered arrival.
+
+    The `to` inset is negative at the bottom so descenders and any display
+    face's overshoot are never shaved by a clip that stopped at exactly 0.
+  */
+  @keyframes text-rise {
+    from { clip-path: inset(0 0 46% 0); }
+    to   { clip-path: inset(0 0 -32% 0); }
+  }
+
+  /*
+    The header lifts off the page once it stops sitting on top of the hero.
+
+    A scroll() timeline rather than a view() one — this is about the document's
+    position, not the element's, and the header never leaves the viewport. The
+    range is tiny (the first 80px) so the transition happens exactly as the hero
+    passes underneath and not gradually across the whole page.
+  */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .header-elevate {
+        animation: header-elevate linear both;
+        animation-timeline: scroll();
+        animation-range: 0 80px;
+      }
+    }
+  }
+
+  @keyframes header-elevate {
+    from { box-shadow: 0 1px 0 0 rgb(0 0 0 / 0); }
+    to   { box-shadow: 0 10px 24px -18px rgb(0 0 0 / 0.55); }
+  }
+
+  /*
+    Staggering. Applied to a container, it walks its children's delays so a grid
+    assembles rather than snapping in as one block. Scroll-driven animations use
+    a *range* offset rather than a delay, since there is no clock to delay
+    against — each child simply starts a little further into the scroll.
+  */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .stagger > *:nth-child(1)  { animation-range: entry 0%  cover 24%; }
+      .stagger > *:nth-child(2)  { animation-range: entry 3%  cover 27%; }
+      .stagger > *:nth-child(3)  { animation-range: entry 6%  cover 30%; }
+      .stagger > *:nth-child(4)  { animation-range: entry 9%  cover 33%; }
+      .stagger > *:nth-child(5)  { animation-range: entry 12% cover 36%; }
+      .stagger > *:nth-child(6)  { animation-range: entry 15% cover 39%; }
+      .stagger > *:nth-child(n+7){ animation-range: entry 18% cover 42%; }
+    }
+  }
+
+  /*
+    ── Interaction ────────────────────────────────────────────────────────────
+  */
+
+  /* A card that lifts and warms its edge toward the brand on hover. */
+  .lift {
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+  .lift:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--brand) 55%, var(--border));
+    box-shadow: 0 12px 28px -14px rgb(0 0 0 / 0.28);
+  }
+
+  /* Underline that draws from the leading edge instead of just appearing. */
+  .link-draw {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    transition: background-size var(--dur) var(--ease);
+  }
+  .link-draw:hover,
+  .link-draw:focus-visible {
+    background-size: 100% 2px;
+  }
+
+  /* The arrow on a "read more" nudges forward with its label. */
+  .nudge > .nudge-arrow {
+    display: inline-block;
+    transition: transform var(--dur) var(--ease);
+  }
+  .nudge:hover > .nudge-arrow,
+  .nudge:focus-visible > .nudge-arrow {
+    transform: translateX(0.28rem);
+  }
+
+  /* Photograph inside a frame pushes in slightly on hover. */
+  .zoom-frame img {
+    transition: transform var(--dur-slow) var(--ease-soft);
+    will-change: transform;
+  }
+  .zoom-frame:hover img {
+    transform: scale(1.045);
+  }
+
+  /* A light sweep that crosses a button once on hover. */
+  .sweep {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .sweep::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      100deg,
+      transparent 20%,
+      rgb(255 255 255 / 0.22) 50%,
+      transparent 80%
+    );
+    transform: translateX(-100%);
+    transition: transform var(--dur-slow) var(--ease);
+  }
+  .sweep:hover::after,
+  .sweep:focus-visible::after {
+    transform: translateX(100%);
+  }
+
+  /* Pressable: everything interactive settles a hair on click. */
+  .press {
+    transition: transform var(--dur-fast) var(--ease);
+  }
+  .press:active {
+    transform: translateY(1px) scale(0.995);
+  }
+
+  /*
+    ── Photographic surfaces ──────────────────────────────────────────────────
+
+    No client imagery ships with the template, but the machinery stays: these
+    scrims are what keep type legible over whatever photography arrives, and
+    they sit deliberately heavy — the picture is atmosphere, the words carry
+    the page. The side variant holds a floor of opacity all the way across
+    rather than fading to nothing, because the trailing edge of a hero is where
+    a bright sky usually is.
+  */
+  .photo-scrim {
+    background: linear-gradient(
+      to top,
+      rgb(8 10 12 / 0.94) 0%,
+      rgb(8 10 12 / 0.82) 34%,
+      rgb(8 10 12 / 0.58) 62%,
+      rgb(8 10 12 / 0.38) 100%
+    );
+  }
+
+  .photo-scrim-side {
+    background:
+      linear-gradient(
+        to right,
+        rgb(8 10 12 / 0.93) 0%,
+        rgb(8 10 12 / 0.82) 34%,
+        rgb(8 10 12 / 0.52) 66%,
+        rgb(8 10 12 / 0.34) 100%
+      ),
+      linear-gradient(to top, rgb(8 10 12 / 0.45) 0%, rgb(8 10 12 / 0) 55%);
+  }
+
+  /* Photographs used purely as texture behind a section of type. */
+  .photo-recede {
+    opacity: 0.42;
+  }
+
+  /*
+    Breadcrumbs sit inside the photographic page header, where the page's own
+    ink colours are close to invisible. Overriding here rather than threading a
+    `tone` prop through the component keeps one Breadcrumbs used everywhere, and
+    keeps the rule next to the scrim it has to survive.
+  */
+  .on-photo nav[aria-label='Breadcrumb'] a {
+    color: var(--on-photo-muted);
+  }
+  .on-photo nav[aria-label='Breadcrumb'] a:hover {
+    color: var(--on-photo);
+  }
+  .on-photo nav[aria-label='Breadcrumb'] [aria-current='page'] {
+    color: var(--on-photo);
+  }
+  .on-photo nav[aria-label='Breadcrumb'] span[aria-hidden='true'] {
+    color: rgb(255 255 255 / 0.4);
+  }
+
+  /* A hairline of brand colour used to open a section. */
+  .rule-brand::before {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    margin-bottom: 1.1rem;
+    background: var(--brand);
+    border-radius: 2px;
+  }
+}
+
+/*
+  Motion doctrine, in prose.
+
+  Nothing here hides content pending script. Motion is transition-only or
+  scroll-driven, on elements that are already rendered and already readable,
+  and it all collapses under prefers-reduced-motion. Every animation above is
+  either inside a `prefers-reduced-motion: no-preference` block already, or is a
+  transition that this rule flattens.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/*
+  Print, and the belt-and-braces for scroll-driven reveals.
+
+  A view() timeline holds an element at its `from` keyframe until it enters the
+  viewport. On screen that is the whole point; on paper there is no scrolling
+  and no viewport to enter, so a printed page could otherwise come out with
+  half its sections blank. Killing the animations here means print always gets
+  the finished, fully-opaque state.
+*/
+@media print {
+  .reveal,
+  .reveal-fade,
+  .reveal-wipe,
+  .drift,
+  .spine-draw,
+  .text-rise,
+  .rule-brand::before {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}

@@ -1,0 +1,13 @@
+<!-- PLACEHOLDER favicon: the neutral template mark (three rising bars in a
+     circle) on a slate tile. Replace per client with their real mark — Q6 in
+     docs/CLIENT-QUESTIONS.md (brand assets). Keep it a square tile with a
+     safe margin; browsers round the corners themselves where they want to. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#10151a"/>
+  <g transform="translate(8 8) scale(2)">
+    <circle cx="12" cy="12" r="10.5" fill="none" stroke="#8ab8f0" stroke-width="1.8"/>
+    <rect x="7" y="12.5" width="2.6" height="5" rx="0.9" fill="#8ab8f0"/>
+    <rect x="10.8" y="9.5" width="2.6" height="8" rx="0.9" fill="#8ab8f0"/>
+    <rect x="14.6" y="6.5" width="2.6" height="11" rx="0.9" fill="#8ab8f0"/>
+  </g>
+</svg>

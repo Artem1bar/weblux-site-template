@@ -1,0 +1,6 @@
+{
+  "gates": ["npm run lint", "npm run typecheck", "npm run test", "npm run build"],
+  "env": { "E2E_PORT": "3300" },
+  "protect": ["docs/CLIENT-QUESTIONS.md"],
+  "report": "docs/nightly/report.md"
+}

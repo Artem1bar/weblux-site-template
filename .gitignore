@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+build/
+dist/
+
+# Environment — never commit secrets
+.env
+.env*.local
+.env.production
+
+# Vercel
+.vercel/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test / coverage
+coverage/
+/test-results/
+/playwright-report/
+/blob-report/
+
+# QA screenshot sweep output (scripts/qa-screenshots.mjs)
+qa-screens/
+
+# Scratch
+scratch/
+tmp/
+
+# gstack local state
+.gstack/
+
+# Generated
+*.pem
+*.tsbuildinfo
+next-env.d.ts
+
+# Public-release hygiene
+.env.*
+!.env.example
+*.db
+*.sqlite
